@@ -14,6 +14,8 @@
 
 <div id="bodycontainer" style="clear: both;">
 
+<div style="clear:both;font-size:14px;color:gray;padding:10px 0px 0px 0px;">Experimental CAMviewer</div>
+
 <!--
 <div id="rolloverdiv">
 <div id="rollovercenter">
@@ -105,7 +107,7 @@ var projection = d3.geo.conicConformal()
 var zoom = d3.behavior.zoom()
     .translate([0, 0])
     .scale(1)
-    .scaleExtent([1, 5])
+    .scaleExtent([1, 10])
     .on("zoom", zoomed);
 
 var path = d3.geo.path()
@@ -116,94 +118,6 @@ var svg = d3.select("div#mapcontainer").append("svg")
     .attr("height", height)
     .attr("class", "mapsvg");
 
-// ######################## //
-// *** DRAW SCATTERPLOT *** //
-// ######################## //
-var margin = {top: 15, right: 20, bottom: 30, left: 40};
-var histo_width = 350 - margin.left - margin.right;
-var histo_height = 300 - margin.top - margin.bottom;
-
-var histosvg = d3.select("div#histocontainer").append("svg")
-		.attr("width", histo_width + margin.left + margin.right)
-		.attr("height", histo_height + margin.top + margin.bottom)
-		.attr("class", "histosvg")
-		 .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-var all_fields = { 'SBCAPE':    { 'field':'CAPE_SFC-potential_mean', 'label':'SBCAPE (J/kg)', 'domain':[0,5000] },
-				   'SBCIN':    { 'field':'CIN_SFC-potential_mean', 'label':'SBCIN (J/kg)', 'domain':[-600,0] },
-				   'SHR6':      { 'field':'SHR6-potential_mean',     'label':'0 - 6 km Shear (kts)', 'domain':[0,100] },
-				   'SHR1':      { 'field':'SHR1-potential_mean',     'label':'0 - 1 km Shear (kts)', 'domain':[0,100] },
-				   'UH25':      { 'field':'UP_HELI_MAX_max', 'label':'2 - 5 km UH (m2/s2)', 'domain':[0,500] },
-				   'UH03':      { 'field':'UP_HELI_MAX03_max', 'label':'0 - 3 km UH (m2/s2)', 'domain':[0,500] },
-				   'UHMIN':     { 'field':'UP_HELI_MIN_min', 'label':'2 - 5 km Min UH (m2/s2)', 'domain':[-500,0] },
-				   'UP':        { 'field':'W_UP_MAX_max',     'label':'Max Updraft (m/s)', 'domain':[0,60] },
-				   'DN':        { 'field':'W_DN_MAX_max',     'label':'Max Downdraft (m/s)', 'domain':[-10,2] },
-				   'WSPD':      { 'field':'WSPD10MAX_max',     'label':'Max 10m Wind Speed (kts)', 'domain':[0,80] },
-				   'RVORT':     { 'field':'RVORT1_MAX_max',     'label':'Max 1km Rel. Vort (10^3 s-1)', 'domain':[0,30] },
-				   'GRPL':      { 'field':'GRPL_MAX_max', 'label':'Col. Int. Graupel (mm)', 'domain':[6,70] },
-				   'AREA':      { 'field':'area', 'label':'Object Area', 'domain':[5,50] },
-				   'DURATION':  { 'field':'Duration', 'label':'Track Duration', 'domain':[0,10] },
-				   'HAIL':      { 'field':'HAIL_MAXK1_max', 'label':'Thompson Hail (in)', 'domain':[0,4] },
-				   'LCL':      { 'field':'LCL_HEIGHT-potential_mean', 'label':'SBLCL Height (m)', 'domain':[0,4000] },
-				   'SRH1':      { 'field':'SRH1-potential_mean', 'label':'0 - 1km SRH (m2/s2)', 'domain':[0,600] },
-				   'SRH3':      { 'field':'SRH3-potential_mean', 'label':'0 - 3km SRH (m2/s2)', 'domain':[0,600] },
-				   'FHR':      { 'field':'Forecast_Hour', 'label':'Forecast Hour', 'domain':[0,49] },
-				   'MEM':      { 'field':'Member', 'label':'Member', 'domain':[1,10] },
-				 }
-
-var scatterx = all_fields['FHR'];
-var scattery = all_fields['UH25'];
-
-var x = d3.scale.linear().range([0, histo_width]);
-var y = d3.scale.linear().range([histo_height, 0]);
-
-x.domain(scatterx.domain);
-y.domain(scattery.domain);
-
-var xAxis = d3.svg.axis().scale(x).orient("bottom").ticks(5).tickFormat(d3.format("d"));
-var yAxis = d3.svg.axis().scale(y).orient("left").ticks(5).tickFormat(d3.format("d"));
-        
-histosvg.append("rect").attr("x", 0)
-    	.attr("y", 0)
-        .attr("width", histo_width)
-        .attr("height", histo_height)
-        .attr("class", "histobg");
-        
-histosvg.append("clipPath")
-		.attr("id", "histo-area")
-		.append("rect")
-		.attr("x", 0)
-    	.attr("y", 0)
-        .attr("width", histo_width)
-        .attr("height", histo_height);
-    
-// add clipping path so dots don't go outside of histogram area
-var histodotbox = histosvg.append("g").attr("clip-path", "url(#histo-area)");
-
-histosvg.append("g").attr("class", "x axis hidden").call(xAxis)
-      .attr("transform", "translate(0,"+histo_height+")")
-    .append("text")
-      .attr("class", "label")
-      .attr("x", histo_width-5)
-      .attr("y", -5)
-      .style("text-anchor", "end")
-      .text(scatterx.label);
-      
-histosvg.append("g").attr("class", "y axis hidden").call(yAxis)
-    .append("text")
-      .attr("class", "label")
-      .attr("transform", "rotate(0)")
-      .attr("x", 5)
-      .attr("y", 5)
-      .attr("dy", ".71em")
-      .style("text-anchor", "start")
-      .text(scattery.label);
-      
-histosvg.append("rect")
-        .attr("width", histo_width)
-        .attr("height", histo_height)
-        .attr("class", "overlay");
 
 // make hexbin here...
 //var hexbin = d3_hexbin.hexbin()
@@ -254,6 +168,7 @@ d3.json("./us.json", function(error, us) {
 
   var files_loaded = 0,
       files_missing = 0;
+
   for (var mem=1; mem<=10; mem++) {
     d3.csv("./data/track_step_NCAR_mem"+mem+"_20160509.csv", function(error, data) {
       if (!error) {
@@ -293,16 +208,6 @@ d3.json("./us.json", function(error, us) {
           		else return 1; 
           });
      
-      // ### PLOT DOTS ON SCATTER PLOT ###
-      histodotbox.selectAll("dot")
-          .data(data).enter()
-          .append("circle")
-          .attr("r", 2.5)
-          .attr("id", function(d,i) { return "dot"+member+"-"+i; })
-          .attr("class", function(d) { return "circle mem"+member+" fhr"+parseInt(d['Forecast_Hour'])+" scatter"; })
-          .attr("cx", function(d) { return x(d[scatterx.field]); })
-          .attr("cy", function(d) { return y(d[scattery.field]); });
-               
        // execute this code when all the files have loaded
        if (files_loaded == 10) whenloaded();       
 
@@ -364,11 +269,6 @@ function whenloaded() {
          	.attr("class", "hoverdot hidden")
         	.attr("cx", 0)
         	.attr("cy", 0);
-	hoverdot = histodotbox.append("circle")
-         	.attr("r", 6)
-         	.attr("class", "hoverdot hidden")
-         	.attr("cx", 0)
-         	.attr("cy", 0);
  
 	var colormem = d3.scale.linear().domain(d3.extent(count_by_mem)).range(["#ede4de", "#A67B5B"]);
 	var colorfhr = d3.scale.linear().domain(d3.extent(count_by_fhr)).range(["#ede4de", "#A67B5B"]);
@@ -391,17 +291,8 @@ function whenloaded() {
 	d3.select("div#bodycontainer").transition().duration(500).style("opacity", "1.0")
  		.each("start", function() {
 			dotbox.select("text").classed("hidden", true); 
-			//dotbox.select("text.loadingBar").classed("hidden", true); 
-			histosvg.selectAll(".axis").classed("hidden", false);
-		 	histosvg.selectAll(".axis text").classed("hidden", false);
  	});
 		 
-	textbox = histosvg.append("text")
-		 			.attr("class", "numobjects")
-		 			.attr("x", histo_width)
-		 			.attr("y", -5)
-		 			.text(num_objects+" objects");
-
 	// update active circles and show/hide dots if mouse is within main svg area
 	d3.select("div#svgcontainer")
 		.on("mouseover", function() { selectActiveCircles(); })
@@ -409,7 +300,6 @@ function whenloaded() {
 	selectActiveCircles();
 
         // add mouse move functions if files loaded
-	histosvg.on("mousemove", moveDotHisto);
         svg.on("mousemove", moveDot)
 }
 
@@ -417,10 +307,6 @@ function allMissing() {
        d3.select("div#bodycontainer").transition().duration(500).style("opacity", "1.0")
                 .each("start", function() {
                         dotbox.select("text").classed("hidden", true); 
-                        //dotbox.select("text.loadingBar").classed("hidden", true); 
-                        histosvg.selectAll(".axis").classed("hidden", false);
-                        histosvg.selectAll(".axis text").classed("hidden", false);
-                        //dotbox.append("text").attr("x", 250).attr("y", 75).text('No storm objects for this forecast').style('font-size', '30px');
        });
 }
 
@@ -474,33 +360,6 @@ function showAll() {
     }, 0);
 }
 
-function filterObjects(field, thresh) {
-    setTimeout( function() {
-            all_circles.classed("filtered", function(d) { return (d[field] < thresh) });
-	    updateCounts();
-    }, 0);
-}
-
-function filterByHour(shr, ehr) {
-    setTimeout( function() {
-            all_circles.classed("filtered", function(d) { return ((d['Forecast_Hour'] < shr) || (d['Forecast_Hour'] > ehr)) });
-            updateCounts();
-    }, 0);
-}
-
-function changeColor(field) {
-    setTimeout( function() {
-	    var color = d3.scale.category20b();
-	    all_circles.style("fill", function(d) { return color(d[field]); });
-    }, 0);
-}
-function resetColor() {	
-    setTimeout( function() {
-	    all_circles.style("fill", function(d){ if (d3.select(this).classed("scatter")) return "gray"; else return "black"; });
-	    all_circles.style("stroke", null).style("stroke-width", null);
-    }, 0);
-}
-
 // update available circles to be selected
 // used to only search among subset of visible dots on map/scatterplot in moveDot() and moveDotHisto()
 // much faster than searching through all dots (and having to get their class to determine if they are visible)
@@ -540,42 +399,6 @@ function updateCounts() {
             if (count_by_mem[f-1] < 1) $("div.rollover#m"+f).css("background-color", "white");
             else $("div.rollover#m"+f).css("background-color", colormem(count_by_mem[f-1]));
 	}
-}
-
-function moveDotHisto() {
-    var mousecoords = d3.mouse(histodotbox.node());
-    var mindiff = 1000,
-        coord   = [0,0],
-        xdiff   = 0,
-        ydiff   = 0;
-        
-	active_circles_scatter.each(function(d) {
-            var xydot = [x(d[scatterx.field]), y(d[scattery.field])];
-            var xdiff = Math.abs(xydot[0] - mousecoords[0]);
-            var ydiff = Math.abs(xydot[1] - mousecoords[1]);
-            var thisdiff = xdiff + ydiff;
-            if (thisdiff <= mindiff) { mindiff = thisdiff; coord = xydot; closestdot = this; }
-    });
-    
-    if (mindiff < 25) {
-        hover.classed("hidden", false);
-        hoverdot.classed("hidden", false);
-    	hoverdot.attr("transform", "translate(" + coord + ")");
-    	
-    	d3.select(closestdot).each(function(d) { 
-    		hover.attr("transform", "translate(" + projection([d['Centroid_Lon'], d['Centroid_Lat']]) + ")") 
-    	});
-    	
-    	var thisfhr = d3.select(closestdot).attr("class").split(" ")[2].substring(3);
-    	var thismem = d3.select(closestdot).attr("class").split(" ")[1].substring(3);
-		$("div.rollover").removeClass("selected");
-		$("div#"+thisfhr+".rollover").addClass("selected");
-        $("div#m"+thismem+".rollover").addClass("selected");
-        
-    } else {
-    	hover.classed("hidden", true);
-    	hoverdot.classed("hidden", true);
-    }
 }
 
 d3.selection.prototype.moveToFront = function() {  
@@ -633,29 +456,10 @@ function moveDot() {
     }
 }
 
-var update_axis = "x";
-function changeHistoField(new_field) {
-	if (update_axis == "x") scatterx = all_fields[new_field];
-	if (update_axis == "y") scattery = all_fields[new_field];
-	
-	x.domain(scatterx.domain);
-    y.domain(scattery.domain);
-    
-    histosvg.selectAll("g.x.axis").transition().duration(500).call(xAxis)
-    histosvg.selectAll("g.x.axis text.label").text(scatterx.label);
-    histosvg.selectAll("g.y.axis").transition().duration(500).call(yAxis);
-    histosvg.selectAll("g.y.axis text.label").text(scattery.label);
-	
-    histodotbox.selectAll(".scatter")
-        .attr("cx", function(d) { return x(d[scatterx.field]); })
-        .attr("cy", function(d) { return y(d[scattery.field]); });
-        
-    if (update_axis == "x") { update_axis = "y"; d3.select("div#rightcontainer span#selectaxis").text("select y-axis"); }
-    else if (update_axis == "y") { update_axis = "x"; d3.select("div#rightcontainer span#selectaxis").text("select x-axis"); }
-}
-
 d3.select(self.frameElement).style("height", height + "px");
 </script>
+
+
 
 </div>
 
