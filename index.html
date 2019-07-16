@@ -14,20 +14,25 @@
 
 <div id="bodycontainer" style="clear: both;">
 
+<!--
 <div id="rolloverdiv">
 <div id="rollovercenter">
 <div class="rollover fhr" id="1">01</div><div class="rollover fhr" id="2">02</div><div class="rollover fhr" id="3">03</div><div class="rollover fhr" id="4">04</div><div class="rollover fhr" id="5">05</div><div class="rollover fhr" id="6">06</div><div class="rollover fhr" id="7">07</div><div class="rollover fhr" id="8">08</div><div class="rollover fhr" id="9">09</div><div class="rollover fhr" id="10">10</div><div class="rollover fhr" id="11">11</div><div class="rollover fhr" id="12">12</div><div class="rollover fhr" id="13">13</div><div class="rollover fhr" id="14">14</div><div class="rollover fhr" id="15">15</div><div class="rollover fhr" id="16">16</div><div class="rollover fhr" id="17">17</div><div class="rollover fhr" id="18">18</div><div class="rollover fhr" id="19">19</div><div class="rollover fhr" id="20">20</div><div class="rollover fhr" id="21">21</div><div class="rollover fhr" id="22">22</div><div class="rollover fhr" id="23">23</div><div class="rollover fhr" id="24">24</div><div class="rollover fhr" id="25">25</div><div class="rollover fhr" id="26">26</div><div class="rollover fhr" id="27">27</div><div class="rollover fhr" id="28">28</div><div class="rollover fhr" id="29">29</div><div class="rollover fhr" id="30">30</div><div class="rollover fhr" id="31">31</div><div class="rollover fhr" id="32">32</div><div class="rollover fhr" id="33">33</div><div class="rollover fhr" id="34">34</div><div class="rollover fhr" id="35">35</div><div class="rollover fhr" id="36">36</div><div class="rollover fhr" id="37">37</div><div class="rollover fhr" id="38">38</div><div class="rollover fhr" id="39">39</div><div class="rollover fhr" id="40">40</div><div class="rollover fhr" id="41">41</div><div class="rollover fhr" id="42">42</div><div class="rollover fhr" id="43">43</div><div class="rollover fhr" id="44">44</div><div class="rollover fhr" id="45">45</div><div class="rollover fhr" id="46">46</div><div class="rollover fhr" id="47">47</div><div class="rollover fhr" id="48">48</div><br style="clear:both;"/>
 </div>
 </div>
+-->
 
+<!--
 <div id="rolloverdiv-members">
 <div class="rollover member" id="m1">Mem 1</div><div class="rollover member" id="m2">Mem 2</div><div class="rollover member" id="m3">Mem 3</div><div class="rollover member" id="m4">Mem 4</div><div class="rollover member" id="m5">Mem 5</div><div class="rollover member" id="m6">Mem 6</div><div class="rollover member" id="m7">Mem 7</div><div class="rollover member" id="m8">Mem 8</div><div class="rollover member" id="m9">Mem 9</div><div class="rollover member" id="m10">Mem 10</div>
 </div>
+-->
 
 <div id="svgcontainer">
 
-<div id="mapcontainer" style="width:850px;float:left;"></div>
+<div id="mapcontainer" style="width:800px;float:left;"></div>
 
+<!--
 <div id="rightcontainer" style="width:335px;float:left;">
   <div id="histocontainer"></div>
   <div id="histopicker" style="padding-left:25px;font-size:12px;width:100%;">
@@ -80,13 +85,13 @@
 		</div>
 
 </div>
-</div>
+</div> --> <!-- end of rightcontainer -->
 
 </div> <!-- end bodycontainer -->
 </div> <!-- end maincontainer -->
 
 <script>
-var width = 850,
+var width = 1200,
     height = 650;
 
 var projection = d3.geo.conicConformal()
@@ -100,7 +105,7 @@ var projection = d3.geo.conicConformal()
 var zoom = d3.behavior.zoom()
     .translate([0, 0])
     .scale(1)
-    .scaleExtent([1, 3])
+    .scaleExtent([1, 5])
     .on("zoom", zoomed);
 
 var path = d3.geo.path()
@@ -225,10 +230,10 @@ for (var i = 0; i < 49; i++) count_by_fhr[i] = 0;
 for (var i = 0; i < 10; i++) count_by_mem[i] = 0;
 
 // loading bar/text
-dotbox.append("text").attr("x", 300).attr("y", 75).text('Loading ...').style('font-size', '30px');
-var loadingBar = dotbox.append("text").attr("x", 500).attr("y", 75).attr("class", "loadingBar").text('0 / 10 members').style('font-size','24px');
+//dotbox.append("text").attr("x", 300).attr("y", 75).text('Loading ...').style('font-size', '30px');
+//var loadingBar = dotbox.append("text").attr("x", 500).attr("y", 75).attr("class", "loadingBar").text('0 / 10 members').style('font-size','24px');
 
-d3.json("us.json", function(error, us) {
+d3.json("./us.json", function(error, us) {
   if (error) throw error;
 
   // draw map background
@@ -255,7 +260,7 @@ d3.json("us.json", function(error, us) {
  
       var member = data[0]['Step_ID'].split('_')[0].substring(3);
       files_loaded += 1;
-      loadingBar.text(files_loaded+" / 10 members");
+      //loadingBar.text(files_loaded+" / 10 members");
       
       // loop over all objects in this file
       for (var num=0; num<data.length; num++) {
@@ -386,7 +391,7 @@ function whenloaded() {
 	d3.select("div#bodycontainer").transition().duration(500).style("opacity", "1.0")
  		.each("start", function() {
 			dotbox.select("text").classed("hidden", true); 
-			dotbox.select("text.loadingBar").classed("hidden", true); 
+			//dotbox.select("text.loadingBar").classed("hidden", true); 
 			histosvg.selectAll(".axis").classed("hidden", false);
 		 	histosvg.selectAll(".axis text").classed("hidden", false);
  	});
@@ -412,10 +417,10 @@ function allMissing() {
        d3.select("div#bodycontainer").transition().duration(500).style("opacity", "1.0")
                 .each("start", function() {
                         dotbox.select("text").classed("hidden", true); 
-                        dotbox.select("text.loadingBar").classed("hidden", true); 
+                        //dotbox.select("text.loadingBar").classed("hidden", true); 
                         histosvg.selectAll(".axis").classed("hidden", false);
                         histosvg.selectAll(".axis text").classed("hidden", false);
-                        dotbox.append("text").attr("x", 250).attr("y", 75).text('No storm objects for this forecast').style('font-size', '30px');
+                        //dotbox.append("text").attr("x", 250).attr("y", 75).text('No storm objects for this forecast').style('font-size', '30px');
        });
 }
 

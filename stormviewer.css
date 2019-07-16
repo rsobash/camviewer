@@ -117,7 +117,7 @@ div.rollover.selected.member {
 div#maincontainer {
 	width: 1250px; 
   	margin: 0 auto; 
-	padding: 0px;
+	padding: 10px;
 	text-align: left; /** to fix IE centering **/
 }
 div#bodycontainer {
