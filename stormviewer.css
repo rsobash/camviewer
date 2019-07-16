@@ -1,0 +1,139 @@
+.land {
+  fill: #eeeeee;
+  stroke: #000;
+  stroke-width: 0.5px;
+}
+
+.county-boundary {
+  fill: none;
+  stroke: #ccc;
+  stroke-width: .5px;
+}
+
+.state-boundary {
+  fill: none;
+  stroke: #000;
+  stroke-width: 0.5px;
+}
+
+svg.mapsvg { 
+	margin-top: 0px;
+	float: left;
+}
+svg.histosvg { 
+	margin-left: 5px;
+	border: 0px;
+}
+
+.hoverdot { fill: red; stroke: white; stroke-width: 2px; cursor: pointer; }
+.hoverdot.scatter { fill: red; stroke: white; stroke-width: 2px; }
+
+circle.circle { stroke-width: 1px; }
+circle.scatter { fill: gray; }
+
+.hidden { visibility: hidden; }
+.filtered { visibility: hidden; }
+
+text { font-family: helvetica; font-size: 14px; }
+.overlay { fill: none; pointer-events: all; }
+
+path.gridbox { 
+	fill: gray;
+	stroke-width: 0px;
+	stroke: none;
+	opacity: 0.6; 
+}
+
+rect.histobg { fill: #EFEFEF; }
+
+body {
+    margin: 0px;
+	padding: 0px;
+	font: normal normal normal 14px helvetica,arial;
+	text-align: center; /** for IE centering **/
+}
+
+div#rolloverdiv {
+        padding: 10px 0px 5px 0px;
+	margin: 5px auto 0px auto;
+	text-align: center;
+	width: 100%;
+}
+div#rolloverdiv-members {
+	clear: both;
+	float: left;
+	width: 65px;
+	padding-top: 50px;
+}
+
+div#rollovercenter {
+	display: inline-block;
+	overflow: hidden;
+        text-align: left;
+}
+
+div.rollover {
+	border-top: 2px solid #FFF;
+	border-bottom: 2px solid #FFF;
+	width: 15px;
+	text-align: center;
+	font-size: 12px;
+	padding: 10px 5px 10px 5px;
+	margin: 0px 0px 0px 0px;
+	float: left;
+	color: #000;
+	cursor: default;
+}
+/*
+div.rollover.loaded {
+	color: #000;
+}
+*/
+div.rollover.zero {
+	color: #000;
+}
+div.rollover.member {
+	width: 45px;
+	border-left: 2px solid #EFEFEF;
+	border-right: 2px solid #EFEFEF;
+	border-top: 0px;
+	border-bottom: 0px;
+}
+div.rollover.faded {
+        opacity: 0.5;
+}
+div.rollover.selected {
+	border-top: 2px solid #000; 
+	border-bottom: 2px solid #000; 
+	font-weight: bold;
+	cursor: pointer;
+}
+div.rollover.selected.member {
+	border-top: 0px;
+	border-bottom: 0px;
+	border-left: 2px solid #000; 
+	border-right: 2px solid #000;
+}
+div#maincontainer {
+	width: 1250px; 
+  	margin: 0 auto; 
+	padding: 0px;
+	text-align: left; /** to fix IE centering **/
+}
+div#bodycontainer {
+	opacity: 0.4;
+}
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+.axis text { font-size: 12px; }
+.axis text.label { font-size: 12px; font-weight: bold; fill: #A67B5B; }
+text.numobjects { font-size: 13px; font-weight: bold; text-anchor: end; }
+
+line.horizontalGrid { fill: none; stroke: gray; stroke-width: 1.0px; opacity: 0.5; }
+
+div.selection { padding: 3px; cursor: pointer; }
+div.selection:hover { font-weight: bold; }
